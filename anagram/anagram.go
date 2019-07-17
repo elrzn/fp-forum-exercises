@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"sort"
 	"strings"
@@ -19,8 +18,7 @@ func sortString(w string) string {
 
 func addWord(word string) {
 	key := sortString(strings.ToLower(word))
-	i, ok := table[key]
-	if ok {
+	if i, ok := table[key]; ok {
 		table[key] = append(i, word)
 	} else {
 		table[key] = []string{word}
@@ -28,13 +26,8 @@ func addWord(word string) {
 }
 
 func main() {
-	file, err := os.Open("wordlist.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
+	file, _ := os.Open("wordlist.txt")
 	defer file.Close()
-
-	cnt := 0
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -42,19 +35,12 @@ func main() {
 		addWord(line)
 	}
 
+	cnt := 0
 	for _, v := range table {
 		if len(v) > 1 {
-			for _, s := range v {
-				fmt.Printf("%s ", s)
-			}
-			fmt.Println("")
+			fmt.Printf("%v\n", v)
 			cnt++
 		}
 	}
-
 	fmt.Println(cnt)
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
 }
